@@ -4,7 +4,18 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/pubsub'], function ($,
     var first_call_delay = 3000;
     var takepicture_delay = 30000;
     return {
+
+        
         setup: function (props) {
+
+            // skip for summary page
+            if(document.getElementById("page-mod-quiz-summary") != null && document.getElementById("page-mod-quiz-summary").innerHTML.length){
+                return false;
+            }
+            if(document.getElementById("page-mod-quiz-review") != null && document.getElementById("page-mod-quiz-review").innerHTML.length){
+                return false;
+            }
+
             var width = 230;    // We will scale the photo width to this
             var height = 0;     // This will be computed based on the input stream
             var streaming = false;
@@ -34,7 +45,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/pubsub'], function ($,
                     data = canvas.toDataURL('image/png');
                     photo.setAttribute('src', data);
                     props.webcampicture = data;
-// console.log(props);
+                    
                     var wsfunction = 'quizaccess_proctoring_send_camshot';
                     var params = {
                         'courseid': props.courseid,
@@ -50,7 +61,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/pubsub'], function ($,
 
                     Ajax.call([request])[0].done(function (data) {
                         if (data.warnings.length < 1) {
-                            console.log("screenshot:", pictureCounter,data);
+                            // console.log("screenshot:", pictureCounter,data);
                             pictureCounter++;
                         } else {
                             Notification.addNotification({
@@ -181,7 +192,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/pubsub'], function ($,
 
                     Ajax.call([request])[0].done(function (data) {
                         if (data.warnings.length < 1) {
-                            console.log(data);
+                            // console.log(data);
                         } else {
                             Notification.addNotification({
                                 message: 'Something went wrong during taking screenshot.',
