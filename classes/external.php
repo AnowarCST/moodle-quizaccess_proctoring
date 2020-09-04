@@ -11,30 +11,36 @@ class quizaccess_proctoring_external extends external_api
     {
         return new external_function_parameters(
             array(
-                'quizid' => new external_value(PARAM_ALPHANUM, 'camshot course id')
+                'courseid' => new external_value(PARAM_ALPHANUM, 'camshot course id'),
+                'quizid' => new external_value(PARAM_ALPHANUM, 'camshot quiz id'),
+                'userid' => new external_value(PARAM_ALPHANUM, 'camshot user id')
             )
         );
     }
 
-    public static function get_camshots($quizid)
+    public static function get_camshots($courseid, $quizid ='', $userid)
     {
         global $DB;
 
         $warnings = array();
 
-        $camshots = $DB->get_records('quizaccess_proctoring_logs', array('quizid' => $quizid), 'id DESC');
+        if ($quizid) {
+            $camshots = $DB->get_records('quizaccess_proctoring_logs', array('courseid' => $courseid,'quizid' => $quizid,'userid' => $userid,'status'=>10001), 'id DESC');
+        }else{
+            $camshots = $DB->get_records('quizaccess_proctoring_logs', array('courseid' => $courseid,'userid' => $userid,'status'=>10001), 'id DESC');
+        }
 
         $returnedcamhosts = array();
 
         foreach ($camshots as $camshot) {
             if ($camshot->webcampicture !== '') {
                 $returnedcamhosts[] = array(
-                    'id' => $camshot->id,
+                    // 'id' => $camshot->id,
                     'courseid' => $camshot->courseid,
                     'quizid' => $camshot->quizid,
                     'userid' => $camshot->userid,
                     'webcampicture' => $camshot->webcampicture,
-                    'status' => $camshot->status,
+                    // 'status' => $camshot->status,
                     'timemodified' => $camshot->timemodified,
                 );
 
@@ -54,12 +60,12 @@ class quizaccess_proctoring_external extends external_api
                 'camshots' => new external_multiple_structure(
                     new external_single_structure(
                         array(
-                            'id' => new external_value(PARAM_INT, 'camshot id'),
+                            // 'id' => new external_value(PARAM_INT, 'camshot id'),
                             'courseid' => new external_value(PARAM_NOTAGS, 'camshot course id'),
                             'quizid' => new external_value(PARAM_NOTAGS, 'camshot quiz id'),
                             'userid' => new external_value(PARAM_NOTAGS, 'camshot user id'),
                             'webcampicture' => new external_value(PARAM_RAW, 'camshot webcam photo'),
-                            'status' => new external_value(PARAM_NOTAGS, 'camshot status'),
+                            // 'status' => new external_value(PARAM_NOTAGS, 'camshot status'),
                             'timemodified' => new external_value(PARAM_NOTAGS, 'camshot time modified'),
                         )
                     ),
@@ -75,6 +81,7 @@ class quizaccess_proctoring_external extends external_api
     {
         return new external_function_parameters(
             array(
+                'courseid' => new external_value(PARAM_ALPHANUM, 'course id'),
                 'screenshotid' => new external_value(PARAM_ALPHANUM, 'screenshot id'),
                 'quizid' => new external_value(PARAM_ALPHANUM, 'screenshot quiz id'),
                 'webcampicture' => new external_value(PARAM_RAW, 'webcam photo'),
@@ -82,11 +89,29 @@ class quizaccess_proctoring_external extends external_api
         );
     }
 
-    public static function send_camshot($screenshotid, $quizid, $webcampicture)
+    public static function send_camshot($courseid, $screenshotid, $quizid, $webcampicture)
     {
-        global $DB, $USER, $COURSE;
+        global $CFG, $DB, $USER;
 
         $warnings = array();
+        
+        $record = new stdClass();
+        $record->filearea = 'picture';
+        $record->component = 'quizaccess_proctoring';
+        $record->filepath = '/';
+        $record->itemid   = 0;
+        $record->license  = '';
+        $record->author   = '';
+
+        $context = context_user::instance($USER->id);
+        $elname = 'repo_upload_file_proctoring';
+
+        $fs = get_file_storage();
+        $sm = get_string_manager();
+
+        // if ($record->filepath !== '/') {
+            $record->filepath = file_correct_filepath($record->filepath);
+        // }
 
         // $record = new stdClass();
         // $record->id = $screenshotid;
@@ -98,23 +123,48 @@ class quizaccess_proctoring_external extends external_api
         // $DB->update_record('quizaccess_proctoring_logs', $record);
         // $DB->insert_record('quizaccess_proctoring_logs', $record);
 
+        
 
+        // $url = $CFG->wwwroot/pluginfile.php/$forumcontextid/mod_forum/post/$postid/image.jpg
 
-        // global $DB, $COURSE, $USER;
 
         $contextquiz = $DB->get_record('course_modules', array('id' => $cmid));
 
+
+         // for base64 to file
+         $data = $webcampicture;
+        list($type, $data) = explode(';', $data);
+        list(, $data)      = explode(',', $data);
+        $data = base64_decode($data);
+
+        // $fileName = 'image'. rand(10,1111).'.png';
+        $path='/uploads/2020/';
+        $fileName = 'webcam-' . $USER->id . '-' . $courseid . '-quizaccess_proctoring-' . time() . '.png';
+        file_put_contents($CFG->dirroot.$path.$fileName, $data);
+
+        // echo $CFG->dirroot;
+        // $record->filename = $fileName;
+        // $record->itemid = 10;
+        // $record->contextid = $context->id;
+        // $record->userid    = $USER->id;
+        // // print_r ($record); exit;
+        // $stored_file = $fs->create_file_from_string($record, $data);
+
+        // $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $data));
+        // echo moodle_url::make_draftfile_url($record->itemid, $record->filepath, $record->filename);
+        // echo $url = moodle_url::make_pluginfile_url($record->contextid, $record->component, $record->filearea, $record->itemid, $record->filepath, $record->filename);
+        // print_r ($stored_file);
+        //  exit;
+
         $record = new stdClass();
-        $record->courseid = $COURSE->id;
+        $record->courseid = $courseid;
         $record->quizid = $quizid;
         $record->userid = $USER->id;
-        $record->webcampicture = $webcampicture;
-        $record->status = 1;
+        $record->webcampicture = $path.$fileName;
+        $record->status = 10001;
         $record->timemodified = time();
         $screenshotid = $DB->insert_record('quizaccess_proctoring_logs', $record, true);
-
-
-
+       
 
         $result = array();
         $result['screenshotid'] = $screenshotid;

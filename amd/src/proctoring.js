@@ -1,6 +1,8 @@
 define(['jquery', 'core/ajax', 'core/notification', 'core/pubsub'], function ($, Ajax, Notification, PubSub) {
     
     var pictureCounter = 0;
+    var first_call_delay = 3000;
+    var takepicture_delay = 30000;
     return {
         setup: function (props) {
             var width = 230;    // We will scale the photo width to this
@@ -32,11 +34,11 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/pubsub'], function ($,
                     data = canvas.toDataURL('image/png');
                     photo.setAttribute('src', data);
                     props.webcampicture = data;
-console.log(props);
+// console.log(props);
                     var wsfunction = 'quizaccess_proctoring_send_camshot';
-                    screenshotid = props.id;
                     var params = {
-                        'screenshotid': screenshotid++,
+                        'courseid': props.courseid,
+                        'screenshotid': props.id,
                         'quizid': props.quizid,
                         'webcampicture': data,
                     };
@@ -86,12 +88,15 @@ console.log(props);
                     streaming = true;
                 }
             }, false);
-            video.addEventListener('click', function (ev) {
-                takepicture();
-                ev.preventDefault();
-            }, false);
+            // allow to click picture
+            // video.addEventListener('click', function (ev) {
+            //     takepicture();
+            //     ev.preventDefault();
+            // }, false);
 
-            setInterval(takepicture, 3000);
+            // takepicture();
+            setTimeout(takepicture, first_call_delay);
+            setInterval(takepicture, takepicture_delay);
 
         },
         init: function (props) {
@@ -133,10 +138,11 @@ console.log(props);
                     }
                 }, false);
 
-                video.addEventListener('click', function (ev) {
-                    takepicture();
-                    ev.preventDefault();
-                }, false);
+                // allow to click picture
+                // video.addEventListener('click', function (ev) {
+                //     takepicture();
+                //     ev.preventDefault();
+                // }, false);
 
                 clearphoto();
             }
@@ -158,10 +164,11 @@ console.log(props);
                     context.drawImage(video, 0, 0, width, height);
                     data = canvas.toDataURL('image/png');
                     photo.setAttribute('src', data);
-                    console.log(props);
+                    // console.log(props);
 
                     var wsfunction = 'quizaccess_proctoring_send_camshot';
                     var params = {
+                        'courseid': props.courseid,
                         'screenshotid': props.id,
                         'quizid': props.quizid,
                         'webcampicture': data,
