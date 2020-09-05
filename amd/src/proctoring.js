@@ -213,13 +213,13 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/pubsub'], function ($,
 });
 
 $(function(){
-    $('#id_submitbutton').prop( "disabled", true );
+    $('#id_submitbutton').hide();
 
     $('#id_proctoring').on('change', function(){
         if(this.checked) { 
-            $('#id_submitbutton').prop( "disabled", false );
+            $('#id_submitbutton').show();
         }else{
-            $('#id_submitbutton').prop( "disabled", true );
+            $('#id_submitbutton').hide();
         }
     })
 });
