@@ -1,8 +1,12 @@
+
+var isCameraAllowed = false;
+
 define(['jquery', 'core/ajax', 'core/notification', 'core/pubsub'], function ($, Ajax, Notification, PubSub) {
     
     var pictureCounter = 0;
-    var first_call_delay = 3000;
+    var first_call_delay = 3000;    
     var takepicture_delay = 30000;
+
     return {
 
         
@@ -79,26 +83,33 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/pubsub'], function ($,
                 .then(function (stream) {
                     video.srcObject = stream;
                     video.play();
+                    isCameraAllowed = true;
                 })
                 .catch(function (err) {
                     console.log("An error occurred: " + err);
+
+                    hideButtons();
                 });
 
-            video.addEventListener('canplay', function (ev) {
-                if (!streaming) {
-                    height = video.videoHeight / (video.videoWidth / width);
-                    // Firefox currently has a bug where the height can't be read from
-                    // the video, so we will make assumptions if this happens.
-                    if (isNaN(height)) {
-                        height = width / (4 / 3);
-                    }
-                    video.setAttribute('width', width);
-                    video.setAttribute('height', height);
-                    canvas.setAttribute('width', width);
-                    canvas.setAttribute('height', height);
-                    streaming = true;
+                if(video){
+                    video.addEventListener('canplay', function (ev) {
+                        if (!streaming) {
+                            height = video.videoHeight / (video.videoWidth / width);
+                            // Firefox currently has a bug where the height can't be read from
+                            // the video, so we will make assumptions if this happens.
+                            if (isNaN(height)) {
+                                height = width / (4 / 3);
+                            }
+                            video.setAttribute('width', width);
+                            video.setAttribute('height', height);
+                            canvas.setAttribute('width', width);
+                            canvas.setAttribute('height', height);
+                            streaming = true;
+                        }
+                    }, false);
+                } else {
+                    hideButtons();
                 }
-            }, false);
             // allow to click picture
             // video.addEventListener('click', function (ev) {
             //     takepicture();
@@ -128,26 +139,33 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/pubsub'], function ($,
                     .then(function (stream) {
                         video.srcObject = stream;
                         video.play();
+                        isCameraAllowed = true;
                     })
                     .catch(function (err) {
                         console.log("An error occurred: " + err);
+
+                        hideButtons();
                     });
 
-                video.addEventListener('canplay', function (ev) {
-                    if (!streaming) {
-                        height = video.videoHeight / (video.videoWidth / width);
-                        // Firefox currently has a bug where the height can't be read from
-                        // the video, so we will make assumptions if this happens.
-                        if (isNaN(height)) {
-                            height = width / (4 / 3);
-                        }
-                        video.setAttribute('width', width);
-                        video.setAttribute('height', height);
-                        canvas.setAttribute('width', width);
-                        canvas.setAttribute('height', height);
-                        streaming = true;
+                    if(video){
+                        video.addEventListener('canplay', function (ev) {
+                            if (!streaming) {
+                                height = video.videoHeight / (video.videoWidth / width);
+                                // Firefox currently has a bug where the height can't be read from
+                                // the video, so we will make assumptions if this happens.
+                                if (isNaN(height)) {
+                                    height = width / (4 / 3);
+                                }
+                                video.setAttribute('width', width);
+                                video.setAttribute('height', height);
+                                canvas.setAttribute('width', width);
+                                canvas.setAttribute('height', height);
+                                streaming = true;
+                            }
+                        }, false);
+                    } else {
+                        hideButtons();
                     }
-                }, false);
 
                 // allow to click picture
                 // video.addEventListener('click', function (ev) {
@@ -159,12 +177,16 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/pubsub'], function ($,
             }
 
             function clearphoto() {
-                var context = canvas.getContext('2d');
-                context.fillStyle = "#AAA";
-                context.fillRect(0, 0, canvas.width, canvas.height);
+                if(isCameraAllowed){
+                    var context = canvas.getContext('2d');
+                    context.fillStyle = "#AAA";
+                    context.fillRect(0, 0, canvas.width, canvas.height);
 
-                data = canvas.toDataURL('image/png');
-                photo.setAttribute('src', data);
+                    data = canvas.toDataURL('image/png');
+                    photo.setAttribute('src', data);
+                } else {
+                    hideButtons();
+                }
             }
 
             function takepicture() {
@@ -206,7 +228,13 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/pubsub'], function ($,
                 }
             }
 
+            function hideButtons(){
+                $('.mod_quiz-next-nav').prop("disabled",true);
+                $('.submitbtns').html('<p class="text text-red red">You need to enable web camera before submitting this quiz!</p>');
+            }
+
             startup();
+
             return data;
         }
     };
@@ -216,10 +244,15 @@ $(function(){
     $('#id_submitbutton').hide();
 
     $('#id_proctoring').on('change', function(){
-        if(this.checked) { 
+        if(this.checked && isCameraAllowed) { 
             $('#id_submitbutton').show();
         }else{
             $('#id_submitbutton').hide();
         }
-    })
+    });
+
 });
+function hideButtons(){
+    $('.mod_quiz-next-nav').prop("disabled",true);
+    $('.submitbtns').html('<p class="text text-red red">You need to enable web camera before submitting this quiz!</p>');
+}
