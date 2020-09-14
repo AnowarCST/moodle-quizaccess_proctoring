@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Config for the quizaccess_proctoring plugin.
+ * Implementaton for the quizaccess_proctoring plugin.
  *
  * @package    quizaccess_proctoring
  * @copyright  2020 Brain Station 23 <moodle@brainstation-23.net>
@@ -23,11 +23,15 @@
  */
 
 
-require_once(__DIR__ . '/../../../../config.php');
+defined('MOODLE_INTERNAL') || die();
 
-$CFG->cachejs = false;
+// https://docs.moodle.org/dev/Admin_settings
 
-$cmid = required_param('cmid', PARAM_RAW);
+global $ADMIN;
 
-$config = \quizaccess_proctoring\helper::get_proctoring_config_content($cmid);
-\quizaccess_proctoring\helper::send_proctoring_config_file($config);
+if ($hassiteconfig) {
+    $settings->add(new admin_setting_configcheckbox('quizaccess_proctoring/autoreconfigureproctoring',
+        get_string('setting:autoreconfigureproctoring', 'quizaccess_proctoring'),
+        get_string('setting:autoreconfigureproctoring_desc', 'quizaccess_proctoring'),
+        '1'));
+}

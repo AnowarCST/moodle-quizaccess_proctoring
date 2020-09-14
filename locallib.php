@@ -15,19 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Config for the quizaccess_proctoring plugin.
+ * Local lib for the quizaccess_proctoring plugin.
  *
  * @package    quizaccess_proctoring
  * @copyright  2020 Brain Station 23 <moodle@brainstation-23.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__ . '/../../../../config.php');
-
-$CFG->cachejs = false;
-
-$cmid = required_param('cmid', PARAM_RAW);
-
-$config = \quizaccess_proctoring\helper::get_proctoring_config_content($cmid);
-\quizaccess_proctoring\helper::send_proctoring_config_file($config);
+/**
+ * Handle the quiz_opened event.
+ *
+ * @param object $event The event object.
+ */
+function handle_quiz_opened($event) {
+    return;
+}
