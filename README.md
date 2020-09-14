@@ -26,19 +26,20 @@ You can install this plugin from [Moodle plugins directory](https://moodle.org/p
 
 > After installing the plugin, you can use the plugin by following:
 
-```
+
 - Go to you quiz setting (Edit Quiz): 
-  Dashboard->My courses->Your Course Name->Lesson->Quiz Name->Edit settings
 - Change the *Extra restrictions on attempts* to **must be acknowledged before starting an attempt**
 - Done!
 ```
+  Dashboard->My courses->Your Course Name->Lesson->Quiz Name->Edit settings
+```
 <p align="center">
-<img src="https://i.imgur.com/rwTYQ9M.png">
+<img src="https://i.imgur.com/rwTYQ9M.png" width="80%">
 </p>
 
 > Now you can attempt your quiz like this:
 <p align="center">
-<img src="https://i.imgur.com/UB9Cihs.png" width="30%">
+<img src="https://i.imgur.com/UB9Cihs.png" width="40%">
 </p>
 
 > You can check the report from Admin Site:
