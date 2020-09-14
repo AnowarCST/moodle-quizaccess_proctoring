@@ -26,7 +26,7 @@ You can install this plugin from [Moodle plugins directory](https://moodle.org/p
 
 > Now you can attemp your quiz like this:
 <p align="center">
-<img src="https://i.imgur.com/UB9Cihs.png">
+<img src="https://i.imgur.com/UB9Cihs.png" width="30%">
 </p>
 
 > You can check the report from Admin Site:
