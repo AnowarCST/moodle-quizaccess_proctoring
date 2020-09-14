@@ -1,4 +1,26 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Lib for the quizaccess_proctoring plugin.
+ *
+ * @package    quizaccess_proctoring
+ * @copyright  2020 Brain Station 23 <moodle@brainstation-23.net>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 
 defined('MOODLE_INTERNAL') || die();
@@ -16,18 +38,18 @@ defined('MOODLE_INTERNAL') || die();
  * @return bool false if the file not found, just send the file otherwise and do not return anything
  */
 function quizaccess_proctoring_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
-    if ($context->contextlevel != CONTEXT_MODULE) {
-        return false;
-    }
 
-    if ($filearea !== 'filemanager_proctoringconfigfile') {
-        return false;
-    }
+    // if ($context->contextlevel != CONTEXT_MODULE) {
+    //     return false;
+    // }
+    // if ($filearea !== 'filemanager_proctoringconfigfile') {
+    //     return false;
+    // }
 
-    require_login($course, true, $cm);
-    if (!has_capability('quizaccess/proctoring:manage_filemanager_proctoringconfigfile', $context)) {
-        return false;
-    }
+    // require_login($course, true, $cm);
+    // if (!has_capability('quizaccess/proctoring:manage_filemanager_proctoringconfigfile', $context)) {
+    //     return false;
+    // }
 
     $itemid = array_shift($args);
     $filename = array_pop($args);
@@ -39,10 +61,12 @@ function quizaccess_proctoring_pluginfile($course, $cm, $context, $filearea, $ar
     }
 
     $fs = get_file_storage();
+
     $file = $fs->get_file($context->id, 'quizaccess_proctoring', $filearea, $itemid, $filepath, $filename);
     if (!$file) {
         return false;
     }
 
+    // print_r('test');exit;
     send_stored_file($file, 0, 0, $forcedownload, $options);
 }

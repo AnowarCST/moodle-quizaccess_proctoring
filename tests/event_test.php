@@ -15,13 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * File containing tests for event.
+ * Unit Test for the quizaccess_proctoring plugin.
  *
- * @package     quizaccess_proctoring
- * @category    test
- * @copyright   2020 Nurul Ferdous <nurul@ferdo.us>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    quizaccess_proctoring
+ * @copyright  2020 Brain Station 23 <moodle@brainstation-23.net>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -39,7 +40,6 @@ defined('MOODLE_INTERNAL') || die();
  * The event test class.
  *
  * @package    quizaccess_proctoring
- * @copyright  2020 Nurul Ferdous <nurul@ferdo.us>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class quizaccess_proctoring_event_testcase extends advanced_testcase {

@@ -1,4 +1,26 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Extrarnal for the quizaccess_proctoring plugin.
+ *
+ * @package    quizaccess_proctoring
+ * @copyright  2020 Brain Station 23 <moodle@brainstation-23.net>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -98,7 +120,7 @@ class quizaccess_proctoring_external extends external_api
         $record = new stdClass();
         $record->filearea = 'picture';
         $record->component = 'quizaccess_proctoring';
-        $record->filepath = '/';
+        $record->filepath = '';
         $record->itemid   = 0;
         $record->license  = '';
         $record->author   = '';
@@ -137,30 +159,29 @@ class quizaccess_proctoring_external extends external_api
         list(, $data)      = explode(',', $data);
         $data = base64_decode($data);
 
-        // $fileName = 'image'. rand(10,1111).'.png';
-        $path='/uploads/2020/';
         $fileName = 'webcam-' . $USER->id . '-' . $courseid . '-quizaccess_proctoring-' . time() . '.png';
-        file_put_contents($CFG->dirroot.$path.$fileName, $data);
+        
+        // upload to moodle root for direct access
+        // $path='/uploads/2020/';
+        // file_put_contents($CFG->dirroot.$path.$fileName, $data);
 
-        // echo $CFG->dirroot;
-        // $record->filename = $fileName;
-        // $record->itemid = 10;
-        // $record->contextid = $context->id;
-        // $record->userid    = $USER->id;
-        // // print_r ($record); exit;
-        // $stored_file = $fs->create_file_from_string($record, $data);
+        $record->courseid = $courseid;
+        $record->filename = $fileName;
+        $record->itemid = 0;
+        $record->contextid = $context->id;
+        $record->userid    = $USER->id;
+        
+        $stored_file = $fs->create_file_from_string($record, $data);
 
-        // $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $data));
-        // echo moodle_url::make_draftfile_url($record->itemid, $record->filepath, $record->filename);
-        // echo $url = moodle_url::make_pluginfile_url($record->contextid, $record->component, $record->filearea, $record->itemid, $record->filepath, $record->filename);
-        // print_r ($stored_file);
-        //  exit;
-
+        // get the 
+        $url = moodle_url::make_pluginfile_url($context->id, $record->component, $record->filearea, $record->itemid, $record->filepath, $record->filename,false);
+    
+        
         $record = new stdClass();
         $record->courseid = $courseid;
         $record->quizid = $quizid;
         $record->userid = $USER->id;
-        $record->webcampicture = $path.$fileName;
+        $record->webcampicture = "{$url}";
         $record->status = 10001;
         $record->timemodified = time();
         $screenshotid = $DB->insert_record('quizaccess_proctoring_logs', $record, true);

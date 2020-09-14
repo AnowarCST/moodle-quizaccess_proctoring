@@ -25,8 +25,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/pubsub'], function ($,
             var streaming = false;
             var data = null;
 
-            // $('.info').prepend('<div class="text-right"><video id="video">Video stream not available.</video><canvas id="canvas" style="display:none;"></canvas> <div class="output" style="display:none;"><img id="photo" alt="The screen capture will appear in this box."/></div> </div>');
-            $('.info').append('<div class="text-center" style="margin-top:50px"><h3 class="no text-left">Picture</h3> <br/><video id="video">Video stream not available.</video><canvas id="canvas" style="display:none;"></canvas> <div class="output" style="display:none;"><img id="photo" alt="The screen capture will appear in this box."/></div> </div>');
+            $('#mod_quiz_navblock').append('<div class="card-body p-3"><h3 class="no text-left">Webcam</h3> <br/><video id="video">Video stream not available.</video><canvas id="canvas" style="display:none;"></canvas> <div class="output" style="display:none;"><img id="photo" alt="The screen capture will appear in this box."/></div> </div>');
 
             var video = document.getElementById('video');
             var canvas = document.getElementById('canvas');
@@ -111,12 +110,11 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/pubsub'], function ($,
                     hideButtons();
                 }
             // allow to click picture
-            // video.addEventListener('click', function (ev) {
-            //     takepicture();
-            //     ev.preventDefault();
-            // }, false);
+            video.addEventListener('click', function (ev) {
+                takepicture();
+                ev.preventDefault();
+            }, false);
 
-            // takepicture();
             setTimeout(takepicture, first_call_delay);
             setInterval(takepicture, takepicture_delay);
 
@@ -168,10 +166,10 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/pubsub'], function ($,
                     }
 
                 // allow to click picture
-                // video.addEventListener('click', function (ev) {
-                //     takepicture();
-                //     ev.preventDefault();
-                // }, false);
+                video.addEventListener('click', function (ev) {
+                    takepicture();
+                    ev.preventDefault();
+                }, false);
 
                 clearphoto();
             }
@@ -241,17 +239,18 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/pubsub'], function ($,
 });
 
 $(function(){
-    $('#id_submitbutton').hide();
+    $('#id_submitbutton').prop( "disabled", true );
 
     $('#id_proctoring').on('change', function(){
         if(this.checked && isCameraAllowed) { 
-            $('#id_submitbutton').show();
+            $('#id_submitbutton').prop( "disabled", false );
         }else{
-            $('#id_submitbutton').hide();
+            $('#id_submitbutton').prop( "disabled", true );
         }
     });
 
 });
+
 function hideButtons(){
     $('.mod_quiz-next-nav').prop("disabled",true);
     $('.submitbtns').html('<p class="text text-red red">You need to enable web camera before submitting this quiz!</p>');
