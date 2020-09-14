@@ -98,7 +98,7 @@ class quizaccess_proctoring_external extends external_api
         $record = new stdClass();
         $record->filearea = 'picture';
         $record->component = 'quizaccess_proctoring';
-        $record->filepath = '/';
+        $record->filepath = '';
         $record->itemid   = 0;
         $record->license  = '';
         $record->author   = '';
@@ -137,30 +137,29 @@ class quizaccess_proctoring_external extends external_api
         list(, $data)      = explode(',', $data);
         $data = base64_decode($data);
 
-        // $fileName = 'image'. rand(10,1111).'.png';
-        $path='/uploads/2020/';
         $fileName = 'webcam-' . $USER->id . '-' . $courseid . '-quizaccess_proctoring-' . time() . '.png';
-        file_put_contents($CFG->dirroot.$path.$fileName, $data);
+        
+        // upload to moodle root for direct access
+        // $path='/uploads/2020/';
+        // file_put_contents($CFG->dirroot.$path.$fileName, $data);
 
-        // echo $CFG->dirroot;
-        // $record->filename = $fileName;
-        // $record->itemid = 10;
-        // $record->contextid = $context->id;
-        // $record->userid    = $USER->id;
-        // // print_r ($record); exit;
-        // $stored_file = $fs->create_file_from_string($record, $data);
+        $record->courseid = $courseid;
+        $record->filename = $fileName;
+        $record->itemid = 0;
+        $record->contextid = $context->id;
+        $record->userid    = $USER->id;
+        
+        $stored_file = $fs->create_file_from_string($record, $data);
 
-        // $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $data));
-        // echo moodle_url::make_draftfile_url($record->itemid, $record->filepath, $record->filename);
-        // echo $url = moodle_url::make_pluginfile_url($record->contextid, $record->component, $record->filearea, $record->itemid, $record->filepath, $record->filename);
-        // print_r ($stored_file);
-        //  exit;
-
+        // get the 
+        $url = moodle_url::make_pluginfile_url($context->id, $record->component, $record->filearea, $record->itemid, $record->filepath, $record->filename,false);
+    
+        
         $record = new stdClass();
         $record->courseid = $courseid;
         $record->quizid = $quizid;
         $record->userid = $USER->id;
-        $record->webcampicture = $path.$fileName;
+        $record->webcampicture = "{$url}";
         $record->status = 10001;
         $record->timemodified = time();
         $screenshotid = $DB->insert_record('quizaccess_proctoring_logs', $record, true);
