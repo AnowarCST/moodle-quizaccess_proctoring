@@ -116,7 +116,7 @@ class quizaccess_proctoring_external extends external_api
         global $CFG, $DB, $USER;
 
         $warnings = array();
-        
+
         $record = new stdClass();
         $record->filearea = 'picture';
         $record->component = 'quizaccess_proctoring';
@@ -127,56 +127,29 @@ class quizaccess_proctoring_external extends external_api
 
         $context = context_user::instance($USER->id);
         $elname = 'repo_upload_file_proctoring';
-
         $fs = get_file_storage();
         $sm = get_string_manager();
-
-        // if ($record->filepath !== '/') {
-            $record->filepath = file_correct_filepath($record->filepath);
-        // }
-
-        // $record = new stdClass();
-        // $record->id = $screenshotid;
-        // $record->quizid = $quizid;
-        // $record->userid = $USER->id;
-        // $record->webcampicture = $webcampicture;
-        // $record->timemodified = time();
-
-        // $DB->update_record('quizaccess_proctoring_logs', $record);
-        // $DB->insert_record('quizaccess_proctoring_logs', $record);
-
-        
-
-        // $url = $CFG->wwwroot/pluginfile.php/$forumcontextid/mod_forum/post/$postid/image.jpg
-
-
+        $record->filepath = file_correct_filepath($record->filepath);
         $contextquiz = $DB->get_record('course_modules', array('id' => $cmid));
 
 
-         // for base64 to file
+         // for base64 to file.
          $data = $webcampicture;
         list($type, $data) = explode(';', $data);
         list(, $data)      = explode(',', $data);
         $data = base64_decode($data);
-
         $fileName = 'webcam-' . $USER->id . '-' . $courseid . '-quizaccess_proctoring-' . time() . '.png';
-        
-        // upload to moodle root for direct access
-        // $path='/uploads/2020/';
-        // file_put_contents($CFG->dirroot.$path.$fileName, $data);
 
         $record->courseid = $courseid;
         $record->filename = $fileName;
         $record->itemid = 0;
         $record->contextid = $context->id;
         $record->userid    = $USER->id;
-        
+
         $stored_file = $fs->create_file_from_string($record, $data);
 
-        // get the 
         $url = moodle_url::make_pluginfile_url($context->id, $record->component, $record->filearea, $record->itemid, $record->filepath, $record->filename,false);
-    
-        
+
         $record = new stdClass();
         $record->courseid = $courseid;
         $record->quizid = $quizid;
@@ -185,7 +158,6 @@ class quizaccess_proctoring_external extends external_api
         $record->status = 10001;
         $record->timemodified = time();
         $screenshotid = $DB->insert_record('quizaccess_proctoring_logs', $record, true);
-       
 
         $result = array();
         $result['screenshotid'] = $screenshotid;
