@@ -2,14 +2,14 @@
 var isCameraAllowed = false;
 
 define(['jquery', 'core/ajax', 'core/notification', 'core/pubsub'], function ($, Ajax, Notification, PubSub) {
-    
+
     var pictureCounter = 0;
-    var first_call_delay = 3000;    
+    var first_call_delay = 3000;
     var takepicture_delay = 30000;
 
     return {
 
-        
+
         setup: function (props) {
 
             // skip for summary page
@@ -48,7 +48,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/pubsub'], function ($,
                     data = canvas.toDataURL('image/png');
                     photo.setAttribute('src', data);
                     props.webcampicture = data;
-                    
+
                     var wsfunction = 'quizaccess_proctoring_send_camshot';
                     var params = {
                         'courseid': props.courseid,
@@ -242,7 +242,7 @@ $(function(){
     $('#id_submitbutton').prop( "disabled", true );
 
     $('#id_proctoring').on('change', function(){
-        if(this.checked && isCameraAllowed) { 
+        if(this.checked && isCameraAllowed) {
             $('#id_submitbutton').prop( "disabled", false );
         }else{
             $('#id_submitbutton').prop( "disabled", true );

@@ -19,7 +19,7 @@
  *
  * @package    quizaccess_proctoring
  * @copyright  2020 Brain Station 23 <moodle@brainstation-23.net>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 
 
@@ -31,7 +31,7 @@ $functions = array(
         'methodname' => 'send_camshot',
         'description' => 'Send a camera snapshot on the given session.',
         'type' => 'write',
-        'ajax'        => true, 
+        'ajax'        => true,
         'capabilities' => '\quizaccess_proctoring:sendcamshot',
     ),
     'quizaccess_proctoring_get_camshots' => array(
@@ -39,7 +39,7 @@ $functions = array(
         'methodname' => 'get_camshots',
         'description' => 'Get the list of camera snapshots in the given session.',
         'type' => 'read',
-        'ajax'        => true, 
+        'ajax'        => true,
         'capabilities' => '\quizaccess_proctoring:getcamshots',
     ),
 );
