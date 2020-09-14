@@ -15,6 +15,7 @@ Before starting the quiz, it will ask for camera permission. By accepting the pe
 - Capture user/student images via web camera
 - Can't access quiz if the user does not allow the camera
 - Admin report and check any suspicious activity
+- Will work with existing Question Bank and Quiz
 - Webservice API for external call
 - Images are stored in Moodledata as a small png image
 
