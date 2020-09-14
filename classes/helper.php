@@ -15,13 +15,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Helper class.
+ * Helper for the quizaccess_proctoring plugin.
  *
  * @package    quizaccess_proctoring
- * @author     Dmitrii Metelkin <dmitriim@catalyst-au.net>
- * @copyright  2020 Catalyst IT
+ * @copyright  2020 Brain Station 23 <moodle@brainstation-23.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 
 namespace quizaccess_proctoring;
 
