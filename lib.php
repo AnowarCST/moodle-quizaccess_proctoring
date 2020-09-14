@@ -19,7 +19,7 @@
  *
  * @package    quizaccess_proctoring
  * @copyright  2020 Brain Station 23 <moodle@brainstation-23.net>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 
 
@@ -28,28 +28,16 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Serve the files.
  *
- * @param stdClass $course the course object
- * @param stdClass $cm the course module object
- * @param \context $context the context
- * @param string $filearea the name of the file area
- * @param array $args extra arguments (itemid, path)
- * @param bool $forcedownload whether or not force download
- * @param array $options additional options affecting the file serving
- * @return bool false if the file not found, just send the file otherwise and do not return anything
+ * @param stdClass $course the course object.
+ * @param stdClass $cm the course module object.
+ * @param context $context the context.
+ * @param string $filearea the name of the file area.
+ * @param array $args extra arguments (itemid, path).
+ * @param bool $forcedownload whether or not force download.
+ * @param array $options additional options affecting the file serving.
+ * @return bool false if the file not found, just send the file otherwise and do not return anything.
  */
 function quizaccess_proctoring_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
-
-    // if ($context->contextlevel != CONTEXT_MODULE) {
-    //     return false;
-    // }
-    // if ($filearea !== 'filemanager_proctoringconfigfile') {
-    //     return false;
-    // }
-
-    // require_login($course, true, $cm);
-    // if (!has_capability('quizaccess/proctoring:manage_filemanager_proctoringconfigfile', $context)) {
-    //     return false;
-    // }
 
     $itemid = array_shift($args);
     $filename = array_pop($args);
@@ -66,7 +54,5 @@ function quizaccess_proctoring_pluginfile($course, $cm, $context, $filearea, $ar
     if (!$file) {
         return false;
     }
-
-    // print_r('test');exit;
     send_stored_file($file, 0, 0, $forcedownload, $options);
 }

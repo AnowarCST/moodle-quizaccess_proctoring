@@ -117,31 +117,18 @@ class quizaccess_proctoring extends quiz_access_rule_base
         $record->id = $DB->insert_record('quizaccess_proctoring_logs', $record, true);
 
         $PAGE->requires->js_call_amd('quizaccess_proctoring/proctoring', 'init', array($record));
-        // $this->log_request();
         $messages = [get_string('proctoringheader', 'quizaccess_proctoring')];
 
         return $messages;
     }
-    
-//    public function is_finished($numprevattempts, $lastattempt) {
-//        return false;
-//    }
-
-//    public function current_attempt_finished() {
-//        $cmid = optional_param('cmid', '', PARAM_INT);
-//        $attempt = optional_param('attempt', '', PARAM_INT);
-//    }
 
     public function setup_attempt_page($page){
         $cmid = optional_param('cmid', '', PARAM_INT);
         $attempt = optional_param('attempt', '', PARAM_INT);
 
         $page->set_title($this->quizobj->get_course()->shortname . ': ' . $page->title);
-        // $page->set_cacheable(false);
         $page->set_popup_notification_allowed(false); // Prevent message notifications.
         $page->set_heading($page->title);
-        // $page->set_pagelayout('secure');
-
         global $DB, $COURSE, $USER;
 
         $contextquiz = $DB->get_record('course_modules', array('id' => $cmid));
@@ -155,24 +142,6 @@ class quizaccess_proctoring extends quiz_access_rule_base
         $record->timemodified = time();
         $record->id = $DB->insert_record('quizaccess_proctoring_logs', $record, true);
         $page->requires->js_call_amd('quizaccess_proctoring/proctoring', 'setup', array($record));
-    }
-
-    private function log_request()
-    {
-        //Stores record on database for reporting
-        global $DB, $COURSE, $USER;
-        $id = optional_param('id', '', PARAM_INT);
-        $contextmodule = context_module::instance($id, MUST_EXIST);
-        $contextquiz = $DB->get_record('course_modules', array('id' => $contextmodule->instanceid));
-
-        $record = new stdClass();
-        $record->courseid = $COURSE->id;
-        $record->quizid = $contextquiz->id;
-        $record->userid = $USER->id;
-        $record->webcampicture = 'webcam-' . $USER->id . '-' . $COURSE->id . '-' . $contextquiz->instance . '-' . time() . '.png';
-        $record->status = 1;
-        $record->timemodified = time();
-        $DB->insert_record('quizaccess_proctoring_logs', $record);
     }
 
 }

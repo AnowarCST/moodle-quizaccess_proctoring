@@ -19,7 +19,7 @@
  *
  * @package    quizaccess_proctoring
  * @copyright  2020 Brain Station 23 <moodle@brainstation-23.net>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 
 
@@ -32,7 +32,7 @@ require_login();
 
 global $CFG,$DB,$USER;
 
-//Get vars
+//Get vars.
 $courseid = optional_param('courseid','',PARAM_INT);
 $quizid = optional_param('quizid','',PARAM_INT);
 $studentid = optional_param('studentid','',PARAM_INT);
@@ -58,18 +58,18 @@ echo '<div id="main">
 
 if (has_capability('mod/quiz:grade', $context, $USER->id) && $quizid != null && $courseid != null) {
 
-    //Check if report if for some user
+    //Check if report if for some user.
     if ($studentid != null && $quizid != null && $courseid != null && $reportid != null) {
-        //Report for this user
+        //Report for this user.
         $sql = "SELECT e.id as reportid, e.userid as studentid, e.webcampicture as webcampicture, e.status as status, e.timemodified as timemodified, u.firstname as firstname, u.lastname as lastname, u.email as email from  {quizaccess_proctoring_logs} e INNER JOIN {user} u WHERE u.id = e.userid AND e.courseid = '$courseid' AND e.quizid = '$cmid' AND u.id = '$studentid' && e.id = '$reportid'";
     }
 
     if ($studentid == null && $quizid != null && $courseid != null) {
-        //Report for all users
+        //Report for all users.
         $sql = "SELECT e.id as reportid, e.userid as studentid, e.webcampicture as webcampicture, e.status as status, e.timemodified as timemodified, u.firstname as firstname, u.lastname as lastname, u.email as email from  {quizaccess_proctoring_logs} e INNER JOIN {user} u WHERE u.id = e.userid AND e.courseid = '$courseid' AND e.quizid = '$cmid' group by e.userid";
     }
 
-    //Print report
+    //Print report.
     $table = new flexible_table('proctoring-report-' . $COURSE->id . '-' . $quizid);
 
     $table->course = $COURSE;
@@ -82,15 +82,15 @@ if (has_capability('mod/quiz:grade', $context, $USER->id) && $quizid != null && 
     $table->set_attribute('class', 'generaltable generalbox reporttable');
     $table->setup();
 
-    //Prepare data
+    //Prepare data.
 
     $sqlexecuted = $DB->get_recordset_sql($sql);
-    
+
     $data = array();
     foreach ($sqlexecuted as $info) {
         $data = array('<a href="'.$CFG->wwwroot.'/user/view.php?id='.$info->studentid.'&course='.$courseid.'" target="_blank">'.$info->firstname.' '.$info->lastname.'</a>',$info->email,date("Y/M/d H:m:s",$info->timemodified),'<a href="?courseid='.$courseid.'&quizid='.$quizid.'&cmid='.$cmid.'&studentid='.$info->studentid.'&reportid='.$info->reportid.'">'.get_string('picturesreport','quizaccess_proctoring').'</a>');
 
-        //Define status
+        //Define status.
         if(!empty($info->webcampicture)){
             array_push($data, '<img src="'.$info->webcampicture.'" alt="screenshot"/>');
         }else{
@@ -99,13 +99,13 @@ if (has_capability('mod/quiz:grade', $context, $USER->id) && $quizid != null && 
         $table->add_data($data);
     }
 
-    //Print table
+    //Print table.
     $table->print_html();
 
 
-    //Print image results
+    //Print image results.
     if ($studentid != null && $quizid != null && $courseid != null && $reportid != null) {
-    
+
         $data = array();
         $sql = "SELECT e.id as reportid, e.userid as studentid, e.webcampicture as webcampicture, e.status as status, e.timemodified as timemodified, u.firstname as firstname, u.lastname as lastname, u.email as email from  {quizaccess_proctoring_logs} e INNER JOIN {user} u WHERE u.id = e.userid AND e.courseid = '$courseid' AND e.quizid = '$cmid' AND u.id = '$studentid'";
 
@@ -132,7 +132,7 @@ if (has_capability('mod/quiz:grade', $context, $USER->id) && $quizid != null && 
     }
 
 } else {
-    //User has not permissions to view this page
+    //User has not permissions to view this page.
     echo '<div class="box generalbox m-b-1 adminerror alert alert-danger p-y-1">' . get_string('notpermissionreport', 'quizaccess_proctoring') . '</div>';
 }
 echo '</div>';
