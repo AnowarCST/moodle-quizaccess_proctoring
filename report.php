@@ -23,26 +23,29 @@
  */
 
 
-include '../../../../config.php';
+defined('MOODLE_INTERNAL') || die();
+
+require_once(__DIR__ . '/../../../../config.php');
 require_once($CFG->dirroot . '/lib/tablelib.php');
+
 $context = context_system::instance();
 $PAGE->set_context($context);
 
 require_login();
 
-global $CFG,$DB,$USER;
+global $CFG, $DB, $USER;
 
-//Get vars.
-$courseid = optional_param('courseid','',PARAM_INT);
-$quizid = optional_param('quizid','',PARAM_INT);
-$studentid = optional_param('studentid','',PARAM_INT);
-$reportid = optional_param('reportid','',PARAM_INT);
-$cmid = optional_param('cmid','',PARAM_INT);
+// Get vars
+$courseid = optional_param('courseid', '', PARAM_INT);
+$quizid = optional_param('quizid', '', PARAM_INT);
+$studentid = optional_param('studentid', '', PARAM_INT);
+$reportid = optional_param('reportid', '', PARAM_INT);
+$cmid = optional_param('cmid', '', PARAM_INT);
 
 $context = context_module::instance($cmid, MUST_EXIST);
 
-$COURSE = $DB->get_record('course',array('id'=>$courseid));
-$quiz = $DB->get_record('quiz',array('id'=>$quizid));
+$COURSE = $DB->get_record('course', array('id' => $courseid));
+$quiz = $DB->get_record('quiz', array('id' => $quizid));
 
 $url = new moodle_url('/mod/quiz/accessrule/proctoring/report.php', array('courseid' => $courseid, 'userid' => $studentid, 'quizid' => $quizid));
 $PAGE->set_url($url);
@@ -53,20 +56,27 @@ echo $OUTPUT->header();
 
 echo '<div id="main">
 <h2>' . get_string('eprotroringreports', 'quizaccess_proctoring') . '' . $quiz->name . '</h2>
-<div class="box generalbox m-b-1 adminerror alert alert-info p-y-1">' . get_string('eprotroringreportsdesc', 'quizaccess_proctoring') . '</div>
+<div class="box generalbox m-b-1 adminerror alert alert-info p-y-1">' 
+. get_string('eprotroringreportsdesc', 'quizaccess_proctoring') . '</div>
 ';
 
 if (has_capability('mod/quiz:grade', $context, $USER->id) && $quizid != null && $courseid != null) {
 
-    //Check if report if for some user.
+    // Check if report if for some user.
     if ($studentid != null && $quizid != null && $courseid != null && $reportid != null) {
-        //Report for this user.
-        $sql = "SELECT e.id as reportid, e.userid as studentid, e.webcampicture as webcampicture, e.status as status, e.timemodified as timemodified, u.firstname as firstname, u.lastname as lastname, u.email as email from  {quizaccess_proctoring_logs} e INNER JOIN {user} u WHERE u.id = e.userid AND e.courseid = '$courseid' AND e.quizid = '$cmid' AND u.id = '$studentid' && e.id = '$reportid'";
+        // Report for this user
+        $sql = "SELECT e.id as reportid, e.userid as studentid, e.webcampicture as webcampicture, e.status as status,
+         e.timemodified as timemodified, u.firstname as firstname, u.lastname as lastname, u.email as email 
+         from  {quizaccess_proctoring_logs} e INNER JOIN {user} u WHERE u.id = e.userid 
+         AND e.courseid = '$courseid' AND e.quizid = '$cmid' AND u.id = '$studentid' && e.id = '$reportid'";
     }
 
     if ($studentid == null && $quizid != null && $courseid != null) {
-        //Report for all users.
-        $sql = "SELECT e.id as reportid, e.userid as studentid, e.webcampicture as webcampicture, e.status as status, e.timemodified as timemodified, u.firstname as firstname, u.lastname as lastname, u.email as email from  {quizaccess_proctoring_logs} e INNER JOIN {user} u WHERE u.id = e.userid AND e.courseid = '$courseid' AND e.quizid = '$cmid' group by e.userid";
+        // Report for all users.
+        $sql = "SELECT e.id as reportid, e.userid as studentid, e.webcampicture as webcampicture, e.status as status,
+         e.timemodified as timemodified, u.firstname as firstname, u.lastname as lastname, u.email as email 
+         from  {quizaccess_proctoring_logs} e INNER JOIN {user} u WHERE u.id = e.userid 
+         AND e.courseid = '$courseid' AND e.quizid = '$cmid' group by e.userid";
     }
 
     //Print report.
@@ -88,9 +98,12 @@ if (has_capability('mod/quiz:grade', $context, $USER->id) && $quizid != null && 
 
     $data = array();
     foreach ($sqlexecuted as $info) {
-        $data = array('<a href="'.$CFG->wwwroot.'/user/view.php?id='.$info->studentid.'&course='.$courseid.'" target="_blank">'.$info->firstname.' '.$info->lastname.'</a>',$info->email,date("Y/M/d H:m:s",$info->timemodified),'<a href="?courseid='.$courseid.'&quizid='.$quizid.'&cmid='.$cmid.'&studentid='.$info->studentid.'&reportid='.$info->reportid.'">'.get_string('picturesreport','quizaccess_proctoring').'</a>');
+        $data = array('<a href="'.$CFG->wwwroot.'/user/view.php?id='.$info->studentid.
+        '&course='.$courseid.'" target="_blank">'.$info->firstname.' '.$info->lastname.'</a>', 
+        $info->email, date("Y/M/d H:m:s", $info->timemodified), '<a href="?courseid='.$courseid.
+        '&quizid='.$quizid.'&cmid='.$cmid.'&studentid='.$info->studentid.'&reportid='.$info->reportid.'">'.
+        get_string('picturesreport', 'quizaccess_proctoring').'</a>');
 
-        //Define status.
         if(!empty($info->webcampicture)){
             array_push($data, '<img src="'.$info->webcampicture.'" alt="screenshot"/>');
         }else{
@@ -99,15 +112,18 @@ if (has_capability('mod/quiz:grade', $context, $USER->id) && $quizid != null && 
         $table->add_data($data);
     }
 
-    //Print table.
+    // Print table.
     $table->print_html();
 
 
-    //Print image results.
+    // Print image results.
     if ($studentid != null && $quizid != null && $courseid != null && $reportid != null) {
 
         $data = array();
-        $sql = "SELECT e.id as reportid, e.userid as studentid, e.webcampicture as webcampicture, e.status as status, e.timemodified as timemodified, u.firstname as firstname, u.lastname as lastname, u.email as email from  {quizaccess_proctoring_logs} e INNER JOIN {user} u WHERE u.id = e.userid AND e.courseid = '$courseid' AND e.quizid = '$cmid' AND u.id = '$studentid'";
+        $sql = "SELECT e.id as reportid, e.userid as studentid, e.webcampicture as webcampicture, e.status as status, 
+        e.timemodified as timemodified, u.firstname as firstname, u.lastname as lastname, u.email as email 
+        from {quizaccess_proctoring_logs} e INNER JOIN {user} u WHERE u.id = e.userid 
+        AND e.courseid = '$courseid' AND e.quizid = '$cmid' AND u.id = '$studentid'";
 
         $sqlexecuted = $DB->get_recordset_sql($sql);
         echo '<h3>' . get_string('picturesusedreport', 'quizaccess_proctoring') . '</h3>';
@@ -132,8 +148,9 @@ if (has_capability('mod/quiz:grade', $context, $USER->id) && $quizid != null && 
     }
 
 } else {
-    //User has not permissions to view this page.
-    echo '<div class="box generalbox m-b-1 adminerror alert alert-danger p-y-1">' . get_string('notpermissionreport', 'quizaccess_proctoring') . '</div>';
+    // User has not permissions to view this page.
+    echo '<div class="box generalbox m-b-1 adminerror alert alert-danger p-y-1">' . 
+    get_string('notpermissionreport', 'quizaccess_proctoring') . '</div>';
 }
 echo '</div>';
 echo $OUTPUT->footer();

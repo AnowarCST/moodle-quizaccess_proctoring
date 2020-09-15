@@ -32,8 +32,7 @@ $CFG->cachejs = false;
 class quizaccess_proctoring extends quiz_access_rule_base
 {
 
-    public function is_preflight_check_required($attemptid)
-    {
+    public function is_preflight_check_required($attemptid) {
         return empty($attemptid);
     }
 
@@ -44,8 +43,7 @@ class quizaccess_proctoring extends quiz_access_rule_base
         $mform->addElement('checkbox', 'proctoring', '', get_string('proctoringlabel', 'quizaccess_proctoring'));
     }
 
-    public function validate_preflight_check($data, $files, $errors, $attemptid)
-    {
+    public function validate_preflight_check($data, $files, $errors, $attemptid) {
         if (empty($data['proctoring'])) {
             $errors['proctoring'] = get_string('youmustagree', 'quizaccess_proctoring');
         }
@@ -53,8 +51,7 @@ class quizaccess_proctoring extends quiz_access_rule_base
         return $errors;
     }
 
-    public static function make(quiz $quizobj, $timenow, $canignoretimelimits)
-    {
+    public static function make(quiz $quizobj, $timenow, $canignoretimelimits) {
         if (empty($quizobj->get_quiz()->proctoringrequired)) {
             return null;
         }
@@ -71,8 +68,7 @@ class quizaccess_proctoring extends quiz_access_rule_base
         $mform->addHelpButton('proctoringrequired', 'proctoringrequired', 'quizaccess_proctoring');
     }
 
-    public static function save_settings($quiz)
-    {
+    public static function save_settings($quiz) {
         global $DB;
         if (empty($quiz->proctoringrequired)) {
             $DB->delete_records('quizaccess_proctoring', array('quizid' => $quiz->id));
@@ -86,22 +82,19 @@ class quizaccess_proctoring extends quiz_access_rule_base
         }
     }
 
-    public static function delete_settings($quiz)
-    {
+    public static function delete_settings($quiz) {
         global $DB;
         $DB->delete_records('quizaccess_proctoring', array('quizid' => $quiz->id));
     }
 
-    public static function get_settings_sql($quizid)
-    {
+    public static function get_settings_sql($quizid) {
         return array(
             'proctoringrequired',
             'LEFT JOIN {quizaccess_proctoring} proctoring ON proctoring.quizid = quiz.id',
             array());
     }
 
-    public function description()
-    {
+    public function description() {
         $cmid = optional_param('id', '', PARAM_INT);
 
         global $DB, $PAGE, $COURSE, $USER;
@@ -122,7 +115,7 @@ class quizaccess_proctoring extends quiz_access_rule_base
         return $messages;
     }
 
-    public function setup_attempt_page($page){
+    public function setup_attempt_page($page) {
         $cmid = optional_param('cmid', '', PARAM_INT);
         $attempt = optional_param('attempt', '', PARAM_INT);
 
