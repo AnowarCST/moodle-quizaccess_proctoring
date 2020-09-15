@@ -26,6 +26,12 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/externallib.php');
 
+/**
+ * External class.
+ *
+ * @copyright  2020 Brain Station 2
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class quizaccess_proctoring_external extends external_api
 {
 
