@@ -47,8 +47,7 @@ class screenshot_created extends base
         ]);
     }
 
-    protected function init()
-    {
+    protected function init() {
         $this->data['objecttable'] = 'quizaccess_proctoring_logs';
         $this->data['crud'] = 'c';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
@@ -62,13 +61,11 @@ class screenshot_created extends base
         return new \moodle_url('/mod/quiz/accessrule/proctoring/screenshot.php', $params);
     }
 
-    public static function get_name()
-    {
+    public static function get_name() {
         return get_string('event:screenshotcreated', 'quizaccess_proctoring');
     }
 
-    public function get_description()
-    {
+    public function get_description() {
         return array('db' => 'quizaccess_proctoring_logs', 'restore' => 'quizaccess_proctoring_logs');
     }
 
@@ -76,8 +73,7 @@ class screenshot_created extends base
         return array('db' => 'quizaccess_proctoring_logs', 'restore' => 'quizaccess_proctoring_logs');
     }
 
-    public static function get_other_mapping()
-    {
+    public static function get_other_mapping() {
         return [];
     }
 }

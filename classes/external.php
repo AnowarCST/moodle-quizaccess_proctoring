@@ -29,8 +29,7 @@ require_once($CFG->libdir . '/externallib.php');
 class quizaccess_proctoring_external extends external_api
 {
 
-    public static function get_camshots_parameters()
-    {
+    public static function get_camshots_parameters() {
         return new external_function_parameters(
             array(
                 'courseid' => new external_value(PARAM_ALPHANUM, 'camshot course id'),
@@ -40,8 +39,7 @@ class quizaccess_proctoring_external extends external_api
         );
     }
 
-    public static function get_camshots($courseid, $quizid ='', $userid)
-    {
+    public static function get_camshots($courseid, $quizid ='', $userid) {
         global $DB;
 
         $warnings = array();
@@ -75,8 +73,7 @@ class quizaccess_proctoring_external extends external_api
         return $result;
     }
 
-    public static function get_camshots_returns()
-    {
+    public static function get_camshots_returns() {
         return new external_single_structure(
             array(
                 'camshots' => new external_multiple_structure(
@@ -99,8 +96,7 @@ class quizaccess_proctoring_external extends external_api
     }
 
 
-    public static function send_camshot_parameters()
-    {
+    public static function send_camshot_parameters() {
         return new external_function_parameters(
             array(
                 'courseid' => new external_value(PARAM_ALPHANUM, 'course id'),
@@ -111,8 +107,7 @@ class quizaccess_proctoring_external extends external_api
         );
     }
 
-    public static function send_camshot($courseid, $screenshotid, $quizid, $webcampicture)
-    {
+    public static function send_camshot($courseid, $screenshotid, $quizid, $webcampicture) {
         global $CFG, $DB, $USER;
 
         $warnings = array();
@@ -166,8 +161,7 @@ class quizaccess_proctoring_external extends external_api
     }
 
 
-    public static function send_camshot_returns()
-    {
+    public static function send_camshot_returns() {
         return new external_single_structure(
             array(
                 'screenshotid' => new external_value(PARAM_INT, 'screenshot sent id'),
