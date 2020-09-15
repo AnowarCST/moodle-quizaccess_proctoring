@@ -45,9 +45,11 @@ class quizaccess_proctoring_external extends external_api
         $warnings = array();
 
         if ($quizid) {
-            $camshots = $DB->get_records('quizaccess_proctoring_logs', array('courseid' => $courseid,'quizid' => $quizid,'userid' => $userid,'status'=>10001), 'id DESC');
-        }else{
-            $camshots = $DB->get_records('quizaccess_proctoring_logs', array('courseid' => $courseid,'userid' => $userid,'status'=>10001), 'id DESC');
+            $camshots = $DB->get_records('quizaccess_proctoring_logs', 
+            array('courseid' => $courseid, 'quizid' => $quizid, 'userid' => $userid, 'status'=>10001), 'id DESC');
+        } else {
+            $camshots = $DB->get_records('quizaccess_proctoring_logs', 
+            array('courseid' => $courseid, 'userid' => $userid, 'status' => 10001), 'id DESC');
         }
 
         $returnedcamhosts = array();
@@ -55,12 +57,10 @@ class quizaccess_proctoring_external extends external_api
         foreach ($camshots as $camshot) {
             if ($camshot->webcampicture !== '') {
                 $returnedcamhosts[] = array(
-                    // 'id' => $camshot->id,
                     'courseid' => $camshot->courseid,
                     'quizid' => $camshot->quizid,
                     'userid' => $camshot->userid,
                     'webcampicture' => $camshot->webcampicture,
-                    // 'status' => $camshot->status,
                     'timemodified' => $camshot->timemodified,
                 );
 
@@ -79,12 +79,10 @@ class quizaccess_proctoring_external extends external_api
                 'camshots' => new external_multiple_structure(
                     new external_single_structure(
                         array(
-                            // 'id' => new external_value(PARAM_INT, 'camshot id'),
                             'courseid' => new external_value(PARAM_NOTAGS, 'camshot course id'),
                             'quizid' => new external_value(PARAM_NOTAGS, 'camshot quiz id'),
                             'userid' => new external_value(PARAM_NOTAGS, 'camshot user id'),
                             'webcampicture' => new external_value(PARAM_RAW, 'camshot webcam photo'),
-                            // 'status' => new external_value(PARAM_NOTAGS, 'camshot status'),
                             'timemodified' => new external_value(PARAM_NOTAGS, 'camshot time modified'),
                         )
                     ),
@@ -127,23 +125,22 @@ class quizaccess_proctoring_external extends external_api
         $record->filepath = file_correct_filepath($record->filepath);
         $contextquiz = $DB->get_record('course_modules', array('id' => $cmid));
 
-
-         // for base64 to file.
+         // For base64 to file.
          $data = $webcampicture;
         list($type, $data) = explode(';', $data);
         list(, $data)      = explode(',', $data);
         $data = base64_decode($data);
-        $fileName = 'webcam-' . $USER->id . '-' . $courseid . '-quizaccess_proctoring-' . time() . '.png';
+        $filename = 'webcam-' . $USER->id . '-' . $courseid . '-quizaccess_proctoring-' . time() . '.png';
 
         $record->courseid = $courseid;
-        $record->filename = $fileName;
+        $record->filename = $filename;
         $record->itemid = 0;
         $record->contextid = $context->id;
         $record->userid    = $USER->id;
 
-        $stored_file = $fs->create_file_from_string($record, $data);
+        $fs->create_file_from_string($record, $data);
 
-        $url = moodle_url::make_pluginfile_url($context->id, $record->component, $record->filearea, $record->itemid, $record->filepath, $record->filename,false);
+        $url = moodle_url::make_pluginfile_url($context->id, $record->component, $record->filearea, $record->itemid, $record->filepath, $record->filename, false);
 
         $record = new stdClass();
         $record->courseid = $courseid;

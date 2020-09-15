@@ -25,7 +25,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-// https://docs.moodle.org/dev/Admin_settings
 
 global $ADMIN;
 

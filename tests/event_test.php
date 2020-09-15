@@ -35,6 +35,7 @@ defined('MOODLE_INTERNAL') || die();
 //
 // The official PHPUnit homepage is at:
 // https://phpunit.de
+// end.
 
 /**
  * The event test class.
